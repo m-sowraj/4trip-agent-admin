@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Calendar } from 'lucide-react';
 import { toast } from 'react-toastify';
 
@@ -10,6 +10,28 @@ const BookingModal = ({ onClose, onAddBooking }) => {
     endDate: '',
     amountEarned: ''
   });
+  
+  const [locations, setLocations] = useState([]);
+  const [isLoadingLocations, setIsLoadingLocations] = useState(true);
+
+  // Add useEffect to fetch locations
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch('https://fourtrip-server.onrender.com/api/locations');
+        if (!response.ok) throw new Error('Failed to fetch locations');
+        const data = await response.json();
+        setLocations(data);
+      } catch (error) {
+        toast.error('Error loading locations');
+        console.error('Error:', error);
+      } finally {
+        setIsLoadingLocations(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   // Add validation for the form
   const validateForm = () => {
@@ -50,6 +72,13 @@ const BookingModal = ({ onClose, onAddBooking }) => {
     
     if (!validateForm()) return;
 
+    // Get the selected location name
+    const selectedLocation = locations.find(loc => loc._id === formData.destination);
+    if (!selectedLocation) {
+      toast.error('Please select a valid destination');
+      return;
+    }
+
     // POST METHOD
     fetch('https://fourtrip-server.onrender.com/api/bookings', {
       method: 'POST',
@@ -61,7 +90,8 @@ const BookingModal = ({ onClose, onAddBooking }) => {
         email: "cm",
         name: formData.clientName,
         phone_number: "0",
-        Destination_id: "60d5ec49f1a2c8b1f8e4e1a2",
+        destination: selectedLocation.name,
+        Destination_id: selectedLocation._id,
         client_name: formData.clientName,
         start_date: formData.startDate,
         end_date: formData.endDate,
@@ -97,8 +127,34 @@ const BookingModal = ({ onClose, onAddBooking }) => {
     });
   };
 
+  // Update the destination field to store the ID directly
+  const destinationField = (
+    <div>
+      <label className="block text-sm text-gray-600 mb-1">Destination</label>
+      {isLoadingLocations ? (
+        <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+          Loading locations...
+        </div>
+      ) : (
+        <select
+          value={formData.destination}
+          onChange={(e) => setFormData({...formData, destination: e.target.value})}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          required
+        >
+          <option value="">Select a destination</option>
+          {locations.map((location) => (
+            <option key={location._id} value={location._id}>
+              {location.name}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
+  );
+
   return (
-    <div className="fixed inset-0  bg-black/50 flex items-center justify-center">
+    <div className="fixed inset-0  bg-black/50 flex z-50 items-center justify-center">
       <div className="min-w-fit bg-white rounded-lg p-6 relative">
         <button 
           onClick={onClose}
@@ -121,15 +177,7 @@ const BookingModal = ({ onClose, onAddBooking }) => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Destination</label>
-            <input
-              type="text"
-              value={formData.destination}
-              onChange={(e) => setFormData({...formData, destination: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
-            />
-          </div>
+          {destinationField}
 
           <div>
             <label className="block text-sm text-gray-600 mb-1">Travel dates</label>

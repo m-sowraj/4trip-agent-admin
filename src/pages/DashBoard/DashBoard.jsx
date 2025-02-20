@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   const tabs = [
     { id: 'forexOrder', label: 'Forex Order', buttonText: '+  Order Now' },
-    { id: 'voucher', label: 'Voucher', buttonText: 'Create new voucher' },
+    // { id: 'voucher', label: 'Voucher', buttonText: 'Create new voucher' },
     { id: 'bookings', label: 'Bookings', buttonText: 'Create new booking' },
   ];
 
@@ -56,8 +56,7 @@ const Dashboard = () => {
           <div className="flex-1 py-3 px-4 bg-[#FCB000] ">
             <div className="flex justify-end items-center">
               <div className="flex items-center space-x-4">
-                <Bell className="w-4 h-4 text-white" />
-                <Settings className="w-4 h-4 text-white" />
+              
                 <div onClick={()=>navi('/profile')} className="cursor-pointer flex items-center space-x-2 px-2 py-1 text-md bg-white rounded-md">
                   <span>{userData?.owner_name || 'Loading...'}</span>
                 </div>
@@ -101,7 +100,7 @@ const Dashboard = () => {
               </div>
               Bookings & Earnings
             </button>
-            
+{/*             
             <button
               className={`flex bg-white items-center gap-2 px-4 py-2 rounded-full ${
                 activeTab === 'voucher' ? 'border-yellow-200 border-2' : 'border-none'
@@ -116,7 +115,7 @@ const Dashboard = () => {
                 <IndianRupee className='w-4 h-4 flex items-center justify-center'/>
               </div>
               Voucher
-            </button>
+            </button> */}
 
             <button
               className={`flex bg-white items-center gap-2 px-4 py-2 rounded-full ${
@@ -154,7 +153,7 @@ const Dashboard = () => {
         </div>
 
         {activeTab === 'forexOrder' && <Forex forexformOpen={forexformOpen} SetforexformOpen={SetforexformOpen}/>}
-        {activeTab === 'voucher' && <Voucher IsModelOpen={IsModelOpen} SetIsModelOpen={SetIsModelOpen}/>}
+        {/* {activeTab === 'voucher' && <Voucher IsModelOpen={IsModelOpen} SetIsModelOpen={SetIsModelOpen}/>} */}
         {activeTab === 'bookings' && <Bookings IsModelOpen2={IsModelOpen2} SetIsModelOpen2={SetIsModelOpen2}  />}
         {activeTab === 'home' && <Home />}
       

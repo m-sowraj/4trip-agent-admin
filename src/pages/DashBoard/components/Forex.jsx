@@ -91,71 +91,75 @@ function Forex({forexformOpen, SetforexformOpen}) {
     const filteredData = getFilteredData();
 
     return (
-        <div className='w-[80%] h-[80vh] max-h-[75vh] overflow-scroll m-auto flex flex-col gap-8 bg-white p-6 px-10 shadow-lg rounded-2xl'>
-            <div className="w-full flex items-center justify-between">
-              <SearchBar onSearch={handleSearch} />
-              <div className="flex items-center gap-4">
-                <select 
-                  value={statusFilter}
-                  onChange={handleStatusChange}
-                  className="border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-200"
-                >
-                  <option value="all">All Status</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="In Transit">In Transit</option>
-                  <option value="Pending">Pending</option>
-                </select>
-                <button 
-                  onClick={downloadCSV}
-                  className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 hover:bg-gray-50"
-                >
-                  <CircleArrowDown className="w-5 h-5 text-gray-600" />
-                  CSV
-                </button>
-              </div>
-            </div>
+        // <div className='w-[80%] h-[80vh] max-h-[75vh] overflow-scroll m-auto flex flex-col gap-8 bg-white p-6 px-10 shadow-lg rounded-2xl'>
+        //     <div className="w-full flex items-center justify-between">
+        //       <SearchBar onSearch={handleSearch} />
+        //       <div className="flex items-center gap-4">
+        //         <select 
+        //           value={statusFilter}
+        //           onChange={handleStatusChange}
+        //           className="border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-200"
+        //         >
+        //           <option value="all">All Status</option>
+        //           <option value="Delivered">Delivered</option>
+        //           <option value="In Transit">In Transit</option>
+        //           <option value="Pending">Pending</option>
+        //         </select>
+        //         <button 
+        //           onClick={downloadCSV}
+        //           className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 hover:bg-gray-50"
+        //         >
+        //           <CircleArrowDown className="w-5 h-5 text-gray-600" />
+        //           CSV
+        //         </button>
+        //       </div>
+        //     </div>
     
-            <div className="overflow-x-auto rounded-md">
-              <table className="table-auto w-full border-collapse">
-                <thead className="bg-gray-200 border-b-2 border-gray-300">
-                  <tr>
-                    <th className="px-4 py-2 text-left">Order ID</th>
-                    <th className="px-4 py-2 text-left">Currency Type</th>
-                    <th className="px-4 py-2 text-left">Amount</th>
-                    <th className="px-4 py-2 text-left">Status</th>
-                    <th className="px-4 py-2 text-left">Delivery Address</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredData.map((order, index) => (
-                    <tr key={index} className="odd:bg-white even:bg-gray-100">
-                      <td className="px-4 py-2">{order.orderID}</td>
-                      <td className="px-4 py-2">{order.currencyType}</td>
-                      <td className="px-4 py-2">{order.amount}</td>
-                      <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-sm ${
-                          order.status === "Delivered"
-                            ? "bg-green-100 text-green-800"
-                            : order.status === "In Transit"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">{order.deliveryAddress}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        //     <div className="overflow-x-auto rounded-md">
+        //       <table className="table-auto w-full border-collapse">
+        //         <thead className="bg-gray-200 border-b-2 border-gray-300">
+        //           <tr>
+        //             <th className="px-4 py-2 text-left">Order ID</th>
+        //             <th className="px-4 py-2 text-left">Currency Type</th>
+        //             <th className="px-4 py-2 text-left">Amount</th>
+        //             <th className="px-4 py-2 text-left">Status</th>
+        //             <th className="px-4 py-2 text-left">Delivery Address</th>
+        //           </tr>
+        //         </thead>
+        //         <tbody>
+        //           {filteredData.map((order, index) => (
+        //             <tr key={index} className="odd:bg-white even:bg-gray-100">
+        //               <td className="px-4 py-2">{order.orderID}</td>
+        //               <td className="px-4 py-2">{order.currencyType}</td>
+        //               <td className="px-4 py-2">{order.amount}</td>
+        //               <td className="px-4 py-2">
+        //                 <span className={`px-2 py-1 rounded-full text-sm ${
+        //                   order.status === "Delivered"
+        //                     ? "bg-green-100 text-green-800"
+        //                     : order.status === "In Transit"
+        //                     ? "bg-yellow-100 text-yellow-800"
+        //                     : "bg-red-100 text-red-800"
+        //                 }`}>
+        //                   {order.status}
+        //                 </span>
+        //               </td>
+        //               <td className="px-4 py-2">{order.deliveryAddress}</td>
+        //             </tr>
+        //           ))}
+        //         </tbody>
+        //       </table>
+        //     </div>
 
-            <ForexOrderForm
-              isOpen={forexformOpen}
-              onClose={() => SetforexformOpen(false)}
-              onAddOrder={handleAddOrder}
-            />
-            <ConfirmationModal isOpen={isConfirmationOpen} />
+        //     <ForexOrderForm
+        //       isOpen={forexformOpen}
+        //       onClose={() => SetforexformOpen(false)}
+        //       onAddOrder={handleAddOrder}
+        //     />
+        //     <ConfirmationModal isOpen={isConfirmationOpen} />
+        // </div>
+
+        <div className='w-full h-full '>
+            <h1 className='text-2xl text-center font-bold'>Welcome to the Forex Page</h1>
         </div>
     )
 }
