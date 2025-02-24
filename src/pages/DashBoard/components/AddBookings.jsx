@@ -96,7 +96,7 @@ const BookingModal = ({ onClose, onAddBooking }) => {
       const data = response.data;
       console.log('Success:', data);
       toast.success('Booking added successfully');
-      if (onAddBooking) onAddBooking(data); // Notify parent component
+      if (onAddBooking) onAddBooking(); // Notify parent component to refresh bookings
       handleClear();
       onClose();
     })

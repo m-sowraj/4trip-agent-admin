@@ -4,6 +4,7 @@ import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import api from '../../utils/axios'; // Import the Axios instance
+import axios from 'axios'; // Import axios for file upload
 
 function SignUp() {
 
@@ -16,6 +17,7 @@ function SignUp() {
         password: '',
         confirmPassword: '',
     });
+    const [logoFile, setLogoFile] = useState(null); // State to store the logo file
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,12 +27,36 @@ function SignUp() {
         });
     };
 
-    const handleSignUp = () => {
+    const handleFileChange = (e) => {
+        setLogoFile(e.target.files[0]);
+    };
+
+    const handleSignUp = async () => {
         console.log('Form Data:', formData);
         if (formData.password !== formData.confirmPassword) {
             toast.error('Passwords do not match');
             return;
         }
+
+        let logoUrl = '';
+        if (logoFile) {
+            const formData = new FormData();
+            formData.append('file', logoFile);
+            try {
+                const response = await axios.post('https://fourtrip-server.onrender.com/api/upload/single', formData, {
+                    headers: {
+                        'Authorization': 'Bearer your_token',
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                logoUrl = response.data.fileUrl;
+            } catch (error) {
+                console.error('File upload error:', error);
+                toast.error('File upload failed');
+                return;
+            }
+        }
+
         api.post('/commonauth/register', {
             business_name: formData.companyName,
             owner_name: formData.fullName,
@@ -40,6 +66,7 @@ function SignUp() {
             reg_type: 'agent',
             isActive: false,
             isNew: true,
+            logo_url: logoUrl, // Include the logo URL in the registration request
         })
         .then((response) => {
             const data = response.data;
@@ -131,6 +158,14 @@ function SignUp() {
                                 )}
                             </div>
                         ))}
+                        <div className="mb-4">
+                            <label className="block text-[13px] mb-[2px]">Upload Logo</label>
+                            <input
+                                type="file"
+                                className="bg-orange-50 outline-none rounded text-[13px] px-3 py-1 w-full"
+                                onChange={handleFileChange}
+                            />
+                        </div>
                         <button
                             className="w-full bg-emerald-400 text-white rounded-lg py-2 mt-4 mb-1 hover:bg-emerald-500"
                             onClick={handleSignUp}

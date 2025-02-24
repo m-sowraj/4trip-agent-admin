@@ -4,7 +4,7 @@ import { Bell, Settings } from "lucide-react";
 import { toast } from 'react-toastify';
 import api from '../../utils/axios'; // Import the Axios instance
 
-const Profile = () => {
+const Profile = ({ isOpen, onClose }) => {
   const [isEditing, setIsEditing] = useState({
     personalInfo: false,
     companyDetails: false,
@@ -22,6 +22,8 @@ const Profile = () => {
     currentPassword: "",
     newPassword: "",
   });
+
+  const [logoImage, setLogoImage] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,6 +44,7 @@ const Profile = () => {
           currentPassword: '',
           newPassword: '',
         });
+        setLogoImage(data.data.logo_url || ''); // Set logo image URL
       } catch (error) {
         console.error('Error fetching user data:', error);
         toast.error('Failed to load profile data');
@@ -87,26 +90,21 @@ const Profile = () => {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="bg-[#F5F6FA]">
-      <div className="bg-[#F5F6FA]">
-          <div className="flex-1 py-3 px-4 bg-[#FCB000] ">
-            <div className="flex justify-end items-center">
-              <div className="flex items-center space-x-4">
-                <Bell className="w-4 h-4 text-white" />
-                <Settings className="w-4 h-4 text-white" />
-                <div className="flex items-center space-x-2 px-2 py-1 text-md bg-white rounded-md">
-                  <span>Pawan kumar</span>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-      <div className="p-8 max-w-4xl mx-auto bg-white">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
+      <div className="bg-white p-8 max-w-4xl mx-auto rounded shadow-lg z-50">
+        <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" onClick={onClose}>
+          &times;
+        </button>
         {/* Profile Header */}
         <div className="bg-white shadow rounded p-6 mb-6">
           <div className="flex items-center">
-            <div className="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0"></div>
+            <div className="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0">
+              {logoImage && <img src={logoImage} alt="Logo" className="w-full h-full rounded-full" />}
+            </div>
             <div className="ml-4">
               <h1 className="text-xl font-semibold">{formData.owner_name}</h1>
               <p className="text-sm text-gray-500">{formData.business_name}</p>
@@ -145,31 +143,11 @@ const Profile = () => {
             </div>
             <div>
               <label className="text-sm text-gray-500">Email</label>
-              {isEditing.personalInfo ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded p-2"
-                />
-              ) : (
-                <p className="text-gray-700">{formData.email}</p>
-              )}
+              <p className="text-gray-700">{formData.email}</p>
             </div>
             <div>
               <label className="text-sm text-gray-500">Phone Number</label>
-              {isEditing.personalInfo ? (
-                <input
-                  type="text"
-                  name="phone_number"
-                  value={formData.phone_number}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded p-2"
-                />
-              ) : (
-                <p className="text-gray-700">{formData.phone_number}</p>
-              )}
+              <p className="text-gray-700">{formData.phone_number}</p>
             </div>
             <div className="col-span-2">
               <label className="text-sm text-gray-500">Address</label>

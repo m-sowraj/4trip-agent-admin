@@ -9,7 +9,7 @@ import api from '../../../utils/axios'; // Import the Axios instance
 const VoucherModal = ({ booking, onClose, locations }) => {
   console.log('booking', booking)
   console.log('locations', locations)
-  const locationName = locations.find(loc => loc._id === booking.Destination_id)?.name || 'Unknown Location';
+  const locationName = booking?.Destination_id?.name
   const downloadVoucher = () => {
     const voucherElement = document.getElementById('voucher-content');
     
@@ -138,20 +138,23 @@ function Bookings({ IsModelOpen2, SetIsModelOpen2 }) {
     fetchLocations();
   }, []);
 
-  useEffect(() => {
-    api.get('/bookings')
-    .then(response => {
+  const refreshBookings = async () => {
+    try {
+      const response = await api.get('/bookings');
       const data = response.data;
       const bookingsWithLocationNames = data.map(booking => ({
         ...booking,
-        destination_name: locations.find(loc => loc._id === booking.Destination_id)?.name || 'Unknown Location'
+        destination_name: booking?.Destination_id?.name
       }));
       setDummyData(bookingsWithLocationNames);
       setFilteredData(bookingsWithLocationNames);
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error('Error:', error);
-    });
+    }
+  };
+
+  useEffect(() => {
+    refreshBookings();
   }, [locations]);
 
   // Apply filters and search
@@ -239,7 +242,7 @@ function Bookings({ IsModelOpen2, SetIsModelOpen2 }) {
 
   return (
     <div className='w-[90%] h-[85vh] max-h-[85vh] overflow-hidden m-auto flex flex-col gap-6 bg-white p-8 shadow-xl rounded-2xl'>
-        {IsModelOpen2 && <BookingModal onClose={() => SetIsModelOpen2(false)} />}
+        {IsModelOpen2 && <BookingModal onClose={() => SetIsModelOpen2(false)} onAddBooking={refreshBookings} />}
         {selectedBooking && (
           <VoucherModal
             booking={selectedBooking}

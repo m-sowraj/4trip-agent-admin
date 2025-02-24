@@ -4,6 +4,7 @@ import Forex from './components/Forex';
 import Voucher from './components/Voucher';
 import Bookings from './components/Bookings';
 import Home from './components/Home';
+import Profile from '../Profile/Profile'; // Import the Profile component
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/axios'; // Import the Axios instance
 
@@ -11,6 +12,7 @@ const Dashboard = () => {
 
   const navi = useNavigate();
   const [userData, setUserData] = useState(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage profile popup
 
   useEffect(() => {
     if (localStorage.getItem('agent_id') === null) {
@@ -53,7 +55,10 @@ const Dashboard = () => {
             <div className="flex justify-end items-center">
               <div className="flex items-center space-x-4">
               
-                <div onClick={()=>navi('/profile')} className="cursor-pointer flex items-center space-x-2 px-2 py-1 text-md bg-white rounded-md">
+                <div onClick={() => setIsProfileOpen(true)} className="cursor-pointer flex items-center space-x-2 px-2 py-1 text-md bg-white rounded-md">
+                  {userData?.logo_url && (
+                    <img src={userData.logo_url} alt="Logo" className="w-8 h-8 rounded-full" />
+                  )}
                   <span>{userData?.owner_name || 'Loading...'}</span>
                 </div>
               </div>
@@ -152,7 +157,7 @@ const Dashboard = () => {
         {/* {activeTab === 'voucher' && <Voucher IsModelOpen={IsModelOpen} SetIsModelOpen={SetIsModelOpen}/>} */}
         {activeTab === 'bookings' && <Bookings IsModelOpen2={IsModelOpen2} SetIsModelOpen2={SetIsModelOpen2}  />}
         {activeTab === 'home' && <Home />}
-      
+        <Profile isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </div>
   );
 };
