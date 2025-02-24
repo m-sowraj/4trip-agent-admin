@@ -5,6 +5,7 @@ import Voucher from './components/Voucher';
 import Bookings from './components/Bookings';
 import Home from './components/Home';
 import { useNavigate } from 'react-router-dom';
+import api from '../../utils/axios'; // Import the Axios instance
 
 const Dashboard = () => {
 
@@ -19,15 +20,10 @@ const Dashboard = () => {
 
     const fetchUserData = async () => {
       const agent_id = localStorage.getItem('agent_id');
-      const token = localStorage.getItem('token_agents');
 
       try {
-        const response = await fetch(`https://fourtrip-server.onrender.com/api/commonauth/user/${agent_id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const data = await response.json();
+        const response = await api.get(`/commonauth/user/${agent_id}`);
+        const data = response.data;
         setUserData(data.data);
       } catch (error) {
         console.error('Error fetching user data:', error);

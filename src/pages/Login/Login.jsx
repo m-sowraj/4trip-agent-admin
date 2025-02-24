@@ -3,6 +3,7 @@ import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import api from '../../utils/axios'; // Import the Axios instance
 
 const LoginComponent = () => {
   const navigate = useNavigate();
@@ -28,31 +29,26 @@ const LoginComponent = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    fetch('https://fourtrip-server.onrender.com/api/commonauth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            phone_number:phone,
-            password,
-        }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.message === "Login successful") {
-                console.log(data);
-                toast.success('Login successful');
-                localStorage.setItem('token_agents', data.token);
-                localStorage.setItem('agent_id', data.data._id);
-                navigate('/');
-            } else {
-                toast.error(data.message);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+    api.post('/commonauth/login', {
+        phone_number: phone,
+        password,
+        reg_type:"agent",
+    })
+    .then((response) => {
+        const data = response.data;
+        if (data.message === "Login successful") {
+            console.log(data);
+            toast.success('Login successful');
+            localStorage.setItem('token_agents', data.token);
+            localStorage.setItem('agent_id', data.data._id);
+            navigate('/');
+        } else {
+            toast.error(data.message);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
   };
 
   return (

@@ -3,6 +3,7 @@ import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import api from '../../utils/axios'; // Import the Axios instance
 
 function SignUp() {
 
@@ -30,24 +31,18 @@ function SignUp() {
             toast.error('Passwords do not match');
             return;
         }
-        fetch('https://fourtrip-server.onrender.com/api/commonauth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                business_name: formData.companyName,
-                owner_name: formData.fullName,
-                email: formData.email,
-                phone_number: formData.phone,
-                password: formData.password,
-                reg_type: 'agent',
-                isActive: false,
-                isNew: true,
-            }),
+        api.post('/commonauth/register', {
+            business_name: formData.companyName,
+            owner_name: formData.fullName,
+            email: formData.email,
+            phone_number: formData.phone,
+            password: formData.password,
+            reg_type: 'agent',
+            isActive: false,
+            isNew: true,
         })
-        .then((response) => response.json())
-        .then((data) => {
+        .then((response) => {
+            const data = response.data;
             console.log('Success:', data);
             if (data.message === 'The email or phone number is already registered') {
                 toast.error(data.message);
@@ -55,8 +50,7 @@ function SignUp() {
             }
             toast.success('Sign up successful');
             navigate('/login');
-        }
-        )
+        })
         .catch((error) => {
             console.error('Error:', error);
             toast.error('Sign up failed');

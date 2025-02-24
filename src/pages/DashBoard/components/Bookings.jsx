@@ -4,6 +4,7 @@ import { CircleArrowDown, Download } from 'lucide-react'
 import TravelBookingModal from './VoucherModal';
 import BookingModal from './AddBookings';
 import { toast } from 'react-hot-toast';
+import api from '../../../utils/axios'; // Import the Axios instance
 
 const VoucherModal = ({ booking, onClose, locations }) => {
   console.log('booking', booking)
@@ -123,9 +124,8 @@ function Bookings({ IsModelOpen2, SetIsModelOpen2 }) {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch('https://fourtrip-server.onrender.com/api/locations');
-        if (!response.ok) throw new Error('Failed to fetch locations');
-        const data = await response.json();
+        const response = await api.get('/locations');
+        const data = response.data;
         setLocations(data);
       } catch (error) {
         console.error('Error fetching locations:', error);
@@ -139,9 +139,9 @@ function Bookings({ IsModelOpen2, SetIsModelOpen2 }) {
   }, []);
 
   useEffect(() => {
-    fetch('https://fourtrip-server.onrender.com/api/bookings')
-    .then(response => response.json())
-    .then(data => {
+    api.get('/bookings')
+    .then(response => {
+      const data = response.data;
       const bookingsWithLocationNames = data.map(booking => ({
         ...booking,
         destination_name: locations.find(loc => loc._id === booking.Destination_id)?.name || 'Unknown Location'

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../../components/Header";
 import { Bell, Settings } from "lucide-react";
 import { toast } from 'react-toastify';
+import api from '../../utils/axios'; // Import the Axios instance
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState({
@@ -25,15 +26,10 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const agent_id = localStorage.getItem('agent_id');
-      const token = localStorage.getItem('token_agents');
 
       try {
-        const response = await fetch(`https://fourtrip-server.onrender.com/api/commonauth/user/${agent_id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const data = await response.json();
+        const response = await api.get(`/commonauth/user/${agent_id}`);
+        const data = response.data;
         
         setFormData({
           owner_name: data.data.owner_name || '',
@@ -72,19 +68,11 @@ const Profile = () => {
 
   const handleSave = async (section) => {
     const agent_id = localStorage.getItem('agent_id');
-    const token = localStorage.getItem('token_agents');
 
     try {
-      const response = await fetch(`http://localhost:3000/api/commonauth/user/${agent_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
+      const response = await api.put(`/commonauth/user/${agent_id}`, formData);
 
-      if (response.ok) {
+      if (response.status === 200) {
         toast.success('Profile updated successfully');
         setIsEditing(prev => ({
           ...prev,

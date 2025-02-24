@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar } from 'lucide-react';
 import { toast } from 'react-toastify';
+import api from '../../../utils/axios'; // Import the Axios instance
 
 const BookingModal = ({ onClose, onAddBooking }) => {
   const [formData, setFormData] = useState({
@@ -18,9 +19,8 @@ const BookingModal = ({ onClose, onAddBooking }) => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch('https://fourtrip-server.onrender.com/api/locations');
-        if (!response.ok) throw new Error('Failed to fetch locations');
-        const data = await response.json();
+        const response = await api.get('/locations');
+        const data = response.data;
         setLocations(data);
       } catch (error) {
         toast.error('Error loading locations');
@@ -80,31 +80,20 @@ const BookingModal = ({ onClose, onAddBooking }) => {
     }
 
     // POST METHOD
-    fetch('https://fourtrip-server.onrender.com/api/bookings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        agent_id: "60d5ec49f1a2c8b1f8e4e1a1",
-        email: "cm",
-        name: formData.clientName,
-        phone_number: "0",
-        destination: selectedLocation.name,
-        Destination_id: selectedLocation._id,
-        client_name: formData.clientName,
-        start_date: formData.startDate,
-        end_date: formData.endDate,
-        amt_earned: Number(formData.amountEarned)
-      })
+    api.post('/bookings', {
+      agent_id: "60d5ec49f1a2c8b1f8e4e1a1",
+      email: "cm",
+      name: formData.clientName,
+      phone_number: "0",
+      destination: selectedLocation.name,
+      Destination_id: selectedLocation._id,
+      client_name: formData.clientName,
+      start_date: formData.startDate,
+      end_date: formData.endDate,
+      amt_earned: Number(formData.amountEarned)
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
+      const data = response.data;
       console.log('Success:', data);
       toast.success('Booking added successfully');
       if (onAddBooking) onAddBooking(data); // Notify parent component
