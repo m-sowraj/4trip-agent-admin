@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import api from '../../utils/axios'; // Import the Axios instance
 
 const LoginComponent = () => {
@@ -29,6 +30,17 @@ const LoginComponent = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // Input validation
+    if (!phone || !password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (phone.length !== 10) {
+      toast.error('Please enter a valid 10-digit phone number');
+      return;
+    }
+
     api.post('/commonauth/login', {
         phone_number: phone,
         password,
@@ -38,23 +50,37 @@ const LoginComponent = () => {
         const data = response.data;
         if (data.message === "Login successful") {
             console.log(data);
-            toast.success('Login successful');
+            toast.success('Login successful! Redirecting...');
             localStorage.setItem('token_agents', data.token);
             localStorage.setItem('agent_id', data.data._id);
-            navigate('/');
+            // Add slight delay before navigation for better UX
+            setTimeout(() => {
+                navigate('/');
+            }, 1500);
         } else {
-            toast.error(data.message);
+            toast.error(data.message || 'Login failed');
         }
     })
     .catch((error) => {
         console.error('Error:', error);
+        toast.error(error.response?.data?.message || 'Login failed. Please try again.');
     });
   };
 
   return (
     <div className="login min-h-screen max-h-screen overflow-hidden flex flex-col bg-gradient-to-br from-teal-400 via-blue-400 to-blue-500">
       <Header />
-
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="flex-1 flex items-center justify-center p-4 gap-10 h-full w-[60%] max-lg:w-[100%] m-auto">
         <div className='bg-white flex items-center justify-center min-w-full p-4 rounded-lg min-h-[28em]'>
             <div className='w-[50%] flex flex-col gap-4'>

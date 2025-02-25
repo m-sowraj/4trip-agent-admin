@@ -31,7 +31,54 @@ function SignUp() {
         setLogoFile(e.target.files[0]);
     };
 
+    const validateForm = () => {
+        // Check if any field is empty
+        for (const key in formData) {
+            if (!formData[key].trim()) {
+                toast.error(`${key.charAt(0).toUpperCase() + key.slice(1)} is required`);
+                return false;
+            }
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            toast.error('Please enter a valid email address');
+            return false;
+        }
+
+        // Validate phone number (10 digits)
+        if (!/^\d{10}$/.test(formData.phone)) {
+            toast.error('Please enter a valid 10-digit phone number');
+            return false;
+        }
+
+        // Password validation
+        if (formData.password.length < 6) {
+            toast.error('Password must be at least 6 characters long');
+            return false;
+        }
+
+        // Check if passwords match
+        if (formData.password !== formData.confirmPassword) {
+            toast.error('Passwords do not match');
+            return false;
+        }
+
+        // Check if logo is uploaded
+        if (!logoFile) {
+            toast.error('Please upload your company logo');
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSignUp = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
         console.log('Form Data:', formData);
         if (formData.password !== formData.confirmPassword) {
             toast.error('Passwords do not match');
@@ -75,12 +122,16 @@ function SignUp() {
                 toast.error(data.message);
                 return;
             }
-            toast.success('Sign up successful');
-            navigate('/login');
+            toast.success('Registration successful! Waiting for admin approval...', {
+                autoClose: 5000,
+                onClose: () => {
+                    navigate('/login');
+                }
+            });
         })
         .catch((error) => {
             console.error('Error:', error);
-            toast.error('Sign up failed');
+            toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
         });
     };
 
@@ -125,12 +176,12 @@ function SignUp() {
                     <div className="max-w-md mx-auto p-4 bg-white rounded">
                         <h2 className="text-xl font-medium mb-4 text-center">Registration Form</h2>
                         {[
-                            { label: 'Enter Your Company Name', name: 'companyName', type: 'text', placeholder: 'Enter your company name' },
-                            { label: 'Enter Your Full Name', name: 'fullName', type: 'text', placeholder: 'Enter your full name' },
-                            { label: 'Enter Your Email', name: 'email', type: 'email', placeholder: 'Enter your email' },
-                            { label: 'Enter Your Phone Number', name: 'phone', type: 'tel', placeholder: '9876543210' },
-                            { label: 'Create Password', name: 'password', type: 'password', placeholder: 'Create a password' },
-                            { label: 'Confirm Password', name: 'confirmPassword', type: 'password', placeholder: 'Confirm your password' },
+                            { label: 'Enter Your Company Name*', name: 'companyName', type: 'text', placeholder: 'Enter your company name' },
+                            { label: 'Enter Your Full Name*', name: 'fullName', type: 'text', placeholder: 'Enter your full name' },
+                            { label: 'Enter Your Email*', name: 'email', type: 'email', placeholder: 'Enter your email' },
+                            { label: 'Enter Your Phone Number*', name: 'phone', type: 'tel', placeholder: '9876543210' },
+                            { label: 'Create Password*', name: 'password', type: 'password', placeholder: 'Minimum 6 characters' },
+                            { label: 'Confirm Password*', name: 'confirmPassword', type: 'password', placeholder: 'Confirm your password' },
                         ].map((field, index) => (
                             <div className="mb-4" key={index}>
                                 <label className="block text-[13px] mb-[2px]">{field.label}</label>
@@ -159,7 +210,7 @@ function SignUp() {
                             </div>
                         ))}
                         <div className="mb-4">
-                            <label className="block text-[13px] mb-[2px]">Upload Logo</label>
+                            <label className="block text-[13px] mb-[2px]">Upload Logo*</label>
                             <input
                                 type="file"
                                 className="bg-orange-50 outline-none rounded text-[13px] px-3 py-1 w-full"
