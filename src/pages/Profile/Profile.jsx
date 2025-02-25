@@ -95,17 +95,17 @@ const Profile = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-      <div className="bg-white p-8 max-w-4xl mx-auto rounded shadow-lg z-50">
+      <div className="bg-white p-8 max-w-4xl mx-auto rounded shadow-lg z-50 w-full sm:w-auto max-h-[90vh] overflow-y-auto">
         <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" onClick={onClose}>
           &times;
         </button>
         {/* Profile Header */}
         <div className="bg-white shadow rounded p-6 mb-6">
-          <div className="flex items-center">
+          <div className="flex items-center flex-col sm:flex-row">
             <div className="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0">
               {logoImage && <img src={logoImage} alt="Logo" className="w-full h-full rounded-full" />}
             </div>
-            <div className="ml-4">
+            <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
               <h1 className="text-xl font-semibold">{formData.owner_name}</h1>
               <p className="text-sm text-gray-500">{formData.business_name}</p>
               <p className="text-sm text-gray-500">
@@ -126,7 +126,7 @@ const Profile = ({ isOpen, onClose }) => {
               {isEditing.personalInfo ? "Save" : "Edit"}
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
               <label className="text-sm text-gray-500">Full Name</label>
               {isEditing.personalInfo ? (
@@ -149,7 +149,7 @@ const Profile = ({ isOpen, onClose }) => {
               <label className="text-sm text-gray-500">Phone Number</label>
               <p className="text-gray-700">{formData.phone_number}</p>
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <label className="text-sm text-gray-500">Address</label>
               {isEditing.personalInfo ? (
                 <input
@@ -177,7 +177,7 @@ const Profile = ({ isOpen, onClose }) => {
               {isEditing.companyDetails ? "Save" : "Edit"}
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
               <label className="text-sm text-gray-500">Company Name</label>
               {isEditing.companyDetails ? (
@@ -192,7 +192,7 @@ const Profile = ({ isOpen, onClose }) => {
                 <p className="text-gray-700">{formData.business_name}</p>
               )}
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <label className="text-sm text-gray-500">City</label>
               {isEditing.companyDetails ? (
                 <input
@@ -212,7 +212,7 @@ const Profile = ({ isOpen, onClose }) => {
         {/* Change Password */}
         <div className="bg-white shadow rounded p-6">
           <h2 className="text-lg font-medium">Change Password</h2>
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
               <label className="text-sm text-gray-500">Current Password</label>
               <input

@@ -67,8 +67,8 @@ const Dashboard = () => {
         </div>
 
         {/* Navs */}
-        <div className="flex items-center justify-center w-full m-auto gap-10 bg-[#F5F6FA] rounded p-4 mb-3">
-          <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center w-full m-auto gap-4 sm:gap-10 bg-[#F5F6FA] rounded p-4 mb-3">
+          <div className="flex flex-col sm:flex-row gap-4">
 
             <button
               className={`flex bg-white items-center gap-2 px-4 py-2 rounded-full ${
@@ -144,7 +144,7 @@ const Dashboard = () => {
                     if (activeTab === 'bookings') { console.log("Bookings");SetIsModelOpen2(true)}
                   }
                 } 
-                className="bg-green-500 ml-20 text-white font-medium px-4 py-2 rounded hover:bg-green-600">
+                className="bg-green-500 sm:ml-20 text-white font-medium px-4 py-2 rounded hover:bg-green-600">
                 {tabs.find((tab) => tab.id === activeTab)?.buttonText}
               </button>
             }
